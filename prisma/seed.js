@@ -1,12 +1,21 @@
 require("dotenv/config");
-const { PrismaClient, Role } = require("@prisma/client");
-const { PrismaBetterSqlite3 } = require("@prisma/adapter-better-sqlite3");
+// const { PrismaClient, Role } = require("@prisma/client");
+// const { PrismaBetterSqlite3 } = require("@prisma/adapter-better-sqlite3");
 
-const prisma = new PrismaClient({
-  adapter: new PrismaBetterSqlite3({
-    url: process.env.DATABASE_URL || "file:./dev.db",
-  }),
-});
+// const prisma = new PrismaClient({
+//   adapter: new PrismaBetterSqlite3({
+//     url: process.env.DATABASE_URL || "file:./dev.db",
+//   }),
+// });
+
+const connectionString = process.env.DATABASE_URL;
+if (!connectionString) throw new Error("DATABASE_URL is not set.");
+
+const { PrismaPg } = require("@prisma/adapter-pg");
+const { PrismaClient, Role } = require("@prisma/client");
+
+const adapter = new PrismaPg({ connectionString });
+const prisma = new PrismaClient({ adapter });
 
 const starterProducts = [
   {
