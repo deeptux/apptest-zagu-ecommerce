@@ -38,7 +38,12 @@ export function AdminStockPieChart({ data }: AdminStockPieChartProps) {
             outerRadius={90}
             innerRadius={42}
             paddingAngle={2}
-            label={({ label, value }) => `${label}: ${value}`}
+            label={(entry) => {
+              const point = entry as { name?: string | number; value?: number | string };
+              const name = point.name != null ? String(point.name) : "N/A";
+              const value = Number(point.value ?? 0);
+              return `${name}: ${value}`;
+            }}
             isAnimationActive={false}
           >
             {safeData.map((entry, index) => (
