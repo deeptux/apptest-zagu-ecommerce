@@ -1,0 +1,111 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum Role {
+  ADMIN
+  DEALER
+}
+
+enum OrderStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model User {
+  id             Int      @id @default(autoincrement())
+  name           String
+  email          String   @unique
+  password       String
+  role           Role     @default(DEALER)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  orders         Order[]  @relation("UserOrders")
+  approvedOrders Order[]  @relation("ApprovedBy")
+  comments       OrderComment[]
+}
+
+model Category {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  products Product[]
+}
+
+model Product {
+  id         Int         @id @default(autoincrement())
+  code       String      @unique
+  name       String
+  description String?
+  price      Float
+  stock      Int         @default(0)
+  unit       String
+  imageUrl   String?
+  isVisible  Boolean     @default(true)
+  categoryId Int?
+  category   Category?   @relation(fields: [categoryId], references: [id])
+  tags       ProductTag[]
+  orderItems OrderItem[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+model ProductTag {
+  id        Int      @id @default(autoincrement())
+  name      String
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([name, productId])
+}
+
+model Order {
+  id             Int         @id @default(autoincrement())
+  reference      String      @unique
+  userId         Int
+  status         OrderStatus @default(PENDING)
+  totalAmount    Float       @default(0)
+  shippingFee    Float       @default(0)
+  taxAmount      Float       @default(0)
+  discountAmount Float       @default(0)
+  grandTotal     Float       @default(0)
+  remarks        String?
+  deliveryAddress String?
+  deliveryCoordinates String?
+  paymentMethod  String?
+  paymentDetails String?
+  rejectionReason String?
+  approvedById   Int?
+  approvedAt     DateTime?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  user           User        @relation("UserOrders", fields: [userId], references: [id])
+  approvedBy     User?       @relation("ApprovedBy", fields: [approvedById], references: [id])
+  items          OrderItem[]
+  comments       OrderComment[]
+}
+
+model OrderItem {
+  id        Int      @id @default(autoincrement())
+  orderId   Int
+  productId Int
+  quantity  Int
+  unitPrice Float
+  lineTotal Float
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id])
+}
+
+model OrderComment {
+  id        Int      @id @default(autoincrement())
+  orderId   Int
+  userId    Int
+  message   String
+  createdAt DateTime @default(now())
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
