@@ -1,9 +1,10 @@
-import { NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
+import { NextRequest, NextResponse } from "next/server";
+import { SESSION_COOKIE } from "@/lib/constants";
+import { decodeSession } from "@/lib/session";
 
-export async function GET(request: Request) {
-  const user = await getCurrentUser();
-  if (!user) {
+export async function GET(request: NextRequest) {
+  const session = decodeSession(request.cookies.get(SESSION_COOKIE)?.value);
+  if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -17,7 +18,7 @@ export async function GET(request: Request) {
       };
 
       sendPulse();
-      interval = setInterval(sendPulse, 3500);
+      interval = setInterval(sendPulse, 10_000);
 
       request.signal.addEventListener("abort", () => {
         if (interval) clearInterval(interval);
