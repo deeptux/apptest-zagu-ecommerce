@@ -26,10 +26,21 @@ export async function saveProductImage(file: File, productCode: string) {
     throw new Error("Only JPG, JPEG, and PNG images are allowed.");
   }
 
+  const maxUploadBytes = 4 * 1024 * 1024;
+  if (file.size > maxUploadBytes) {
+    throw new Error("Image size must be 4MB or less.");
+  }
+
   const fileName = `${safeName(productCode)}-${Date.now()}${extension}`;
+  const bytes = Buffer.from(await file.arrayBuffer());
+
+  if (process.env.VERCEL) {
+    const base64 = bytes.toString("base64");
+    return `data:${file.type};base64,${base64}`;
+  }
+
   const targetDir = path.join(process.cwd(), "public", "products");
   const targetFile = path.join(targetDir, fileName);
-  const bytes = Buffer.from(await file.arrayBuffer());
 
   await mkdir(targetDir, { recursive: true });
   await writeFile(targetFile, bytes);

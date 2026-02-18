@@ -89,6 +89,17 @@ async function main() {
     },
   });
 
+  await prisma.user.upsert({
+    where: { email: "dealer2@zagu.local" },
+    update: {},
+    create: {
+      name: "Dealer Two",
+      email: "dealer2@zagu.local",
+      password: "dealer123",
+      role: Role.DEALER,
+    },
+  });
+
   for (const product of starterProducts) {
     const category = await prisma.category.findUnique({
       where: { name: product.categoryName },
