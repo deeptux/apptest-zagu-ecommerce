@@ -672,11 +672,10 @@ export function OrderingClient({
       {snackbar && (
         <div className="xl:col-span-2">
           <div
-            className={`rounded-xl border px-4 py-2 text-sm font-semibold shadow-sm ${
-              snackbar.type === "success"
+            className={`rounded-xl border px-4 py-2 text-sm font-semibold shadow-sm ${snackbar.type === "success"
                 ? "border-emerald-200 bg-emerald-50 text-emerald-700"
                 : "border-slate-200 bg-slate-50 text-slate-700"
-            }`}
+              }`}
           >
             {snackbar.message}
           </div>
@@ -691,8 +690,8 @@ export function OrderingClient({
               key={category}
               onClick={() => setActiveCategory(category)}
               className={`w-full rounded-xl border px-3 py-2 text-left text-sm font-semibold transition ${activeCategory === category
-                  ? "border-[#f4b133] bg-[#fff6e4] text-[#cc8d18]"
-                  : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+                ? "border-[#f4b133] bg-[#fff6e4] text-[#cc8d18]"
+                : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
                 }`}
             >
               {category}
@@ -795,8 +794,8 @@ export function OrderingClient({
                             setActiveProductId(null);
                           }}
                           className={`inline-flex items-center justify-center rounded-lg border p-2 ${wishlisted
-                              ? "border-amber-300 bg-amber-50 text-amber-600"
-                              : "border-slate-300 text-slate-500"
+                            ? "border-amber-300 bg-amber-50 text-amber-600"
+                            : "border-slate-300 text-slate-500"
                             }`}
                           title={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
                         >
@@ -833,7 +832,7 @@ export function OrderingClient({
       </button>
 
       <aside
-        className={`fixed bottom-4 right-0 top-20 z-20 overflow-y-auto rounded-l-2xl border border-r-0 border-slate-200 bg-white p-3 sm:p-4 shadow-xl transition-all duration-300 ${checkoutMode ? "w-[780px] max-w-[96vw]" : "w-[320px]"
+        className={`fixed bottom-4 right-0 top-20 z-20 overflow-y-auto md:overflow-x-auto rounded-l-2xl border border-r-0 border-slate-200 bg-white p-3 sm:p-4 shadow-xl transition-all duration-300 ${checkoutMode ? "w-[830px] max-w-[96vw]" : "w-[320px]"
           } ${summaryOpen ? "translate-x-0" : "translate-x-full"
           }`}
       >
@@ -914,388 +913,390 @@ export function OrderingClient({
             </button>
           </>
         ) : (
-          <div className="grid gap-3 lg:grid-cols-[1.2fr_1fr]">
-            <section className="rounded-2xl border border-slate-200 bg-white p-4">
-              <h3 className="text-lg font-bold text-slate-900 sm:text-xl lg:text-2xl">Items Ordered</h3>
-              <div className="mt-4 max-h-[38vh] space-y-3 overflow-auto pr-1 sm:max-h-[46vh] lg:max-h-[520px]">
-                {visibleCart.map((line) => (
-                  <div key={line.productId} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                    <div className="flex items-center gap-3">
-                      <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md bg-slate-200">
-                        <Image
-                          src={line.imageUrl || "/products/not-available.png"}
-                          alt={line.name}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-semibold text-slate-800 sm:text-base">{line.name}</p>
-                        <p className="text-xs text-slate-500 sm:text-sm">
-                          UOM: {line.unit} / PHP {line.price.toFixed(2)}
+          <div className="overflow-x-auto md:pb-1">
+            <div className="mx-auto grid w-fit gap-3 md:min-w-[740px] md:grid-cols-[370px_320px] lg:min-w-0 lg:grid-cols-[380px_400px]">
+            <section className="w-full max-w-[320px] rounded-2xl border border-slate-200 bg-white p-3 sm:p-4 md:max-w-[370px] lg:max-w-[400px]">
+                <h3 className="text-base font-bold text-slate-900 sm:text-lg">Items Ordered</h3>
+                <div className="mt-4 max-h-[38vh] space-y-3 overflow-auto pr-1 sm:max-h-[46vh] lg:max-h-[520px]">
+                  {visibleCart.map((line) => (
+                    <div key={line.productId} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                      <div className="flex items-center gap-3">
+                        <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md bg-slate-200">
+                          <Image
+                            src={line.imageUrl || "/products/not-available.png"}
+                            alt={line.name}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-xs font-semibold text-slate-800 sm:text-sm">{line.name}</p>
+                          <p className="text-[11px] text-slate-500 sm:text-xs">
+                            UOM: {line.unit} / PHP {line.price.toFixed(2)}
+                          </p>
+                        </div>
+                        <p className="text-[11px] font-semibold text-slate-600 sm:text-xs">x {line.quantity}</p>
+                        <p className="rounded-full bg-white px-2 py-1 text-[11px] font-semibold text-slate-700 sm:text-xs">
+                          PHP {(line.price * line.quantity).toFixed(2)}
                         </p>
                       </div>
-                      <p className="text-xs font-semibold text-slate-600 sm:text-sm">x {line.quantity}</p>
-                      <p className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-700 sm:text-sm">
-                        PHP {(line.price * line.quantity).toFixed(2)}
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="w-full max-w-[320px] space-y-3 lg:max-w-[400px]">
+                <div className="rounded-2xl border border-slate-200 bg-white p-3 text-xs sm:p-4 sm:text-sm">
+                  <div className="flex items-center justify-between gap-2">
+                    <h4 className="text-base font-bold text-slate-900 sm:text-lg">Order Details</h4>
+                    {!addressEditMode && (
+                      <div className="inline-flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setAddressEditMode(true);
+                            setError("");
+                            setSuccess("");
+                          }}
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50"
+                          title="Edit delivery address"
+                          aria-label="Edit delivery address"
+                        >
+                          <Edit3 className="h-3.5 w-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleClearDeliveryAddress}
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50"
+                          title="Clear delivery address"
+                          aria-label="Clear delivery address"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                  <p className="mt-3 text-sm font-semibold text-slate-700">Delivery Address</p>
+
+                  {!addressEditMode ? (
+                    <div className="mt-2 space-y-2">
+                      <p className="text-sm text-slate-600">{savedAddressLabel}</p>
+                      <p className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-700">
+                        <MapPin className="h-3.5 w-3.5" />
+                        {savedCoordinatesLabel}
                       </p>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            <section className="space-y-3">
-              <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                <div className="flex items-center justify-between gap-2">
-                  <h4 className="text-lg font-bold text-slate-900 sm:text-xl lg:text-2xl">Order Details</h4>
-                  {!addressEditMode && (
-                    <div className="inline-flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setAddressEditMode(true);
-                          setError("");
-                          setSuccess("");
-                        }}
-                        className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50"
-                        title="Edit delivery address"
-                        aria-label="Edit delivery address"
-                      >
-                        <Edit3 className="h-3.5 w-3.5" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={handleClearDeliveryAddress}
-                        className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50"
-                        title="Clear delivery address"
-                        aria-label="Clear delivery address"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </button>
-                    </div>
-                  )}
-                </div>
-                <p className="mt-3 text-sm font-semibold text-slate-700">Delivery Address</p>
-
-                {!addressEditMode ? (
-                  <div className="mt-2 space-y-2">
-                    <p className="text-sm text-slate-600">{savedAddressLabel}</p>
-                    <p className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-700">
-                      <MapPin className="h-3.5 w-3.5" />
-                      {savedCoordinatesLabel}
-                    </p>
-                  </div>
-                ) : (
-                  <div className="mt-3 space-y-2">
-                    <input
-                      value={addressForm.floorBlockLotStreet}
-                      onChange={(event) =>
-                        handleAddressFieldChange("floorBlockLotStreet", event.target.value)
-                      }
-                      placeholder="Floor, block, lot and street"
-                      className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
-                    />
-                    <input
-                      value={addressForm.subdivisionVillageDistrict}
-                      onChange={(event) =>
-                        handleAddressFieldChange("subdivisionVillageDistrict", event.target.value)
-                      }
-                      placeholder="Subdivision, village, district"
-                      className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
-                    />
-                    <input
-                      value={addressForm.barangay}
-                      onChange={(event) => handleAddressFieldChange("barangay", event.target.value)}
-                      placeholder="Barangay"
-                      className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
-                    />
-                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  ) : (
+                    <div className="mt-3 space-y-2">
                       <input
-                        value={addressForm.city}
-                        onChange={(event) => handleAddressFieldChange("city", event.target.value)}
-                        placeholder="City"
+                        value={addressForm.floorBlockLotStreet}
+                        onChange={(event) =>
+                          handleAddressFieldChange("floorBlockLotStreet", event.target.value)
+                        }
+                        placeholder="Floor, block, lot and street"
                         className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
                       />
                       <input
-                        value={addressForm.province}
-                        onChange={(event) => handleAddressFieldChange("province", event.target.value)}
-                        placeholder="Province"
+                        value={addressForm.subdivisionVillageDistrict}
+                        onChange={(event) =>
+                          handleAddressFieldChange("subdivisionVillageDistrict", event.target.value)
+                        }
+                        placeholder="Subdivision, village, district"
                         className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
                       />
-                    </div>
-                    <input
-                      value={addressForm.zipCode}
-                      onChange={(event) => handleAddressFieldChange("zipCode", event.target.value)}
-                      placeholder="Zip code"
-                      className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setTempCoordinates(selectedCoordinates);
-                        setMapModalOpen(true);
-                      }}
-                      className="flex w-full items-center justify-between rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
-                    >
-                      <span className="truncate text-left">
-                        Coordinates:{" "}
-                        {selectedCoordinates ? formatCoordinates(selectedCoordinates) : "Click to pin on map"}
-                      </span>
-                      <MapPin className="h-4 w-4 shrink-0" />
-                    </button>
-                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                      <button
-                        type="button"
-                        onClick={handleSaveDeliveryAddress}
-                        className="w-full rounded-xl bg-[#f4b133] px-4 py-2 text-sm font-semibold text-white hover:bg-[#e7a221]"
-                      >
-                        Save Delivery Address
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setAddressEditMode(false)}
-                        className="w-full rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                )}
-                <div className="mt-3">
-                  <p className="mb-1 text-sm font-semibold text-slate-700">Remarks (optional)</p>
-                  <textarea
-                    value={remarks}
-                    onChange={(event) => setRemarks(event.target.value)}
-                    className="h-20 w-full rounded-xl border border-slate-200 p-3 text-sm outline-none ring-[#f4b133] focus:ring-2"
-                    placeholder="Remarks (optional)"
-                  />
-                </div>
-              </div>
-              <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                <div className="flex items-center justify-between gap-2">
-                  <h4 className="text-lg font-bold text-slate-900 sm:text-xl lg:text-2xl">Payment Method</h4>
-                  {!paymentEditMode && (
-                    <div className="inline-flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setPaymentEditMode(true);
-                          setError("");
-                          setSuccess("");
-                        }}
-                        className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50"
-                        title="Edit payment method"
-                        aria-label="Edit payment method"
-                      >
-                        <Edit3 className="h-3.5 w-3.5" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={handleClearPaymentMethod}
-                        className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50"
-                        title="Clear payment method"
-                        aria-label="Clear payment method"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </button>
-                    </div>
-                  )}
-                </div>
-                {!paymentEditMode ? (
-                  <p className="mt-3 text-sm text-slate-500">{savedPaymentSummary}</p>
-                ) : (
-                  <div className="mt-3 space-y-2">
-                    <select
-                      value={selectedPaymentMethod}
-                      onChange={(event) => setSelectedPaymentMethod(event.target.value as PaymentMethod)}
-                      className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
-                    >
-                      <option value="">Select payment method</option>
-                      <option value="CARD">Debit/Credit Card</option>
-                      <option value="GCASH">GCash</option>
-                      <option value="QR_PH">QR PH</option>
-                      <option value="BANK_TRANSFER">Bank Transfer</option>
-                      <option value="COD">Cash on Delivery</option>
-                    </select>
-
-                    {selectedPaymentMethod === "CARD" && (
-                      <div className="space-y-2">
+                      <input
+                        value={addressForm.barangay}
+                        onChange={(event) => handleAddressFieldChange("barangay", event.target.value)}
+                        placeholder="Barangay"
+                        className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
+                      />
+                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                         <input
-                          value={paymentForm.cardHolderName}
-                          onChange={(event) => handlePaymentFieldChange("cardHolderName", event.target.value)}
-                          placeholder="Card holder name"
+                          value={addressForm.city}
+                          onChange={(event) => handleAddressFieldChange("city", event.target.value)}
+                          placeholder="City"
                           className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
                         />
-                        <div className="grid grid-cols-2 gap-2">
+                        <input
+                          value={addressForm.province}
+                          onChange={(event) => handleAddressFieldChange("province", event.target.value)}
+                          placeholder="Province"
+                          className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
+                        />
+                      </div>
+                      <input
+                        value={addressForm.zipCode}
+                        onChange={(event) => handleAddressFieldChange("zipCode", event.target.value)}
+                        placeholder="Zip code"
+                        className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setTempCoordinates(selectedCoordinates);
+                          setMapModalOpen(true);
+                        }}
+                        className="flex w-full items-center justify-between rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
+                      >
+                        <span className="truncate text-left">
+                          Coordinates:{" "}
+                          {selectedCoordinates ? formatCoordinates(selectedCoordinates) : "Click to pin on map"}
+                        </span>
+                        <MapPin className="h-4 w-4 shrink-0" />
+                      </button>
+                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                        <button
+                          type="button"
+                          onClick={handleSaveDeliveryAddress}
+                          className="w-full rounded-xl bg-[#f4b133] px-4 py-2 text-sm font-semibold text-white hover:bg-[#e7a221]"
+                        >
+                          Save Delivery Address
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setAddressEditMode(false)}
+                          className="w-full rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  <div className="mt-3">
+                    <p className="mb-1 text-sm font-semibold text-slate-700">Remarks (optional)</p>
+                    <textarea
+                      value={remarks}
+                      onChange={(event) => setRemarks(event.target.value)}
+                      className="h-20 w-full rounded-xl border border-slate-200 p-3 text-sm outline-none ring-[#f4b133] focus:ring-2"
+                      placeholder="Remarks (optional)"
+                    />
+                  </div>
+                </div>
+                <div className="rounded-2xl border border-slate-200 bg-white p-3 text-xs sm:p-4 sm:text-sm">
+                  <div className="flex items-center justify-between gap-2">
+                    <h4 className="text-base font-bold text-slate-900 sm:text-lg">Payment Method</h4>
+                    {!paymentEditMode && (
+                      <div className="inline-flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setPaymentEditMode(true);
+                            setError("");
+                            setSuccess("");
+                          }}
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50"
+                          title="Edit payment method"
+                          aria-label="Edit payment method"
+                        >
+                          <Edit3 className="h-3.5 w-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleClearPaymentMethod}
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50"
+                          title="Clear payment method"
+                          aria-label="Clear payment method"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                  {!paymentEditMode ? (
+                    <p className="mt-3 text-sm text-slate-500">{savedPaymentSummary}</p>
+                  ) : (
+                    <div className="mt-3 space-y-2">
+                      <select
+                        value={selectedPaymentMethod}
+                        onChange={(event) => setSelectedPaymentMethod(event.target.value as PaymentMethod)}
+                        className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
+                      >
+                        <option value="">Select payment method</option>
+                        <option value="CARD">Debit/Credit Card</option>
+                        <option value="GCASH">GCash</option>
+                        <option value="QR_PH">QR PH</option>
+                        <option value="BANK_TRANSFER">Bank Transfer</option>
+                        <option value="COD">Cash on Delivery</option>
+                      </select>
+
+                      {selectedPaymentMethod === "CARD" && (
+                        <div className="space-y-2">
                           <input
-                            value={paymentForm.cardLast4}
-                            onChange={(event) => handlePaymentFieldChange("cardLast4", event.target.value)}
-                            placeholder="Last 4 digits"
+                            value={paymentForm.cardHolderName}
+                            onChange={(event) => handlePaymentFieldChange("cardHolderName", event.target.value)}
+                            placeholder="Card holder name"
+                            className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
+                          />
+                          <div className="grid grid-cols-2 gap-2">
+                            <input
+                              value={paymentForm.cardLast4}
+                              onChange={(event) => handlePaymentFieldChange("cardLast4", event.target.value)}
+                              placeholder="Last 4 digits"
+                              className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
+                            />
+                            <input
+                              value={paymentForm.cardExpiry}
+                              onChange={(event) => handlePaymentFieldChange("cardExpiry", event.target.value)}
+                              placeholder="Expiry (MM/YY)"
+                              className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      {selectedPaymentMethod === "GCASH" && (
+                        <div className="space-y-2">
+                          <input
+                            value={paymentForm.gcashAccountName}
+                            onChange={(event) =>
+                              handlePaymentFieldChange("gcashAccountName", event.target.value)
+                            }
+                            placeholder="GCash account name"
                             className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
                           />
                           <input
-                            value={paymentForm.cardExpiry}
-                            onChange={(event) => handlePaymentFieldChange("cardExpiry", event.target.value)}
-                            placeholder="Expiry (MM/YY)"
+                            value={paymentForm.gcashNumber}
+                            onChange={(event) => handlePaymentFieldChange("gcashNumber", event.target.value)}
+                            placeholder="GCash number"
                             className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
                           />
                         </div>
-                      </div>
-                    )}
+                      )}
 
-                    {selectedPaymentMethod === "GCASH" && (
-                      <div className="space-y-2">
+                      {selectedPaymentMethod === "QR_PH" && (
                         <input
-                          value={paymentForm.gcashAccountName}
-                          onChange={(event) =>
-                            handlePaymentFieldChange("gcashAccountName", event.target.value)
-                          }
-                          placeholder="GCash account name"
+                          value={paymentForm.qrReference}
+                          onChange={(event) => handlePaymentFieldChange("qrReference", event.target.value)}
+                          placeholder="QR PH reference number"
                           className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
                         />
-                        <input
-                          value={paymentForm.gcashNumber}
-                          onChange={(event) => handlePaymentFieldChange("gcashNumber", event.target.value)}
-                          placeholder="GCash number"
-                          className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
-                        />
-                      </div>
-                    )}
+                      )}
 
-                    {selectedPaymentMethod === "QR_PH" && (
+                      {selectedPaymentMethod === "BANK_TRANSFER" && (
+                        <div className="space-y-2">
+                          <input
+                            value={paymentForm.bankName}
+                            onChange={(event) => handlePaymentFieldChange("bankName", event.target.value)}
+                            placeholder="Bank name"
+                            className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
+                          />
+                          <input
+                            value={paymentForm.bankAccountName}
+                            onChange={(event) =>
+                              handlePaymentFieldChange("bankAccountName", event.target.value)
+                            }
+                            placeholder="Account name"
+                            className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
+                          />
+                          <input
+                            value={paymentForm.bankAccountNumber}
+                            onChange={(event) =>
+                              handlePaymentFieldChange("bankAccountNumber", event.target.value)
+                            }
+                            placeholder="Account number"
+                            className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
+                          />
+                        </div>
+                      )}
+
+                      {selectedPaymentMethod === "COD" && (
+                        <div className="space-y-2">
+                          <input
+                            value={paymentForm.codReceiverName}
+                            onChange={(event) =>
+                              handlePaymentFieldChange("codReceiverName", event.target.value)
+                            }
+                            placeholder="Receiver full name"
+                            className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
+                          />
+                          <input
+                            value={paymentForm.codContactNumber}
+                            onChange={(event) =>
+                              handlePaymentFieldChange("codContactNumber", event.target.value)
+                            }
+                            placeholder="Receiver contact number"
+                            className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
+                          />
+                        </div>
+                      )}
+                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                        <button
+                          type="button"
+                          onClick={handleSavePaymentMethod}
+                          className="w-full rounded-xl bg-[#f4b133] px-4 py-2 text-sm font-semibold text-white hover:bg-[#e7a221]"
+                        >
+                          Save Payment Method
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setPaymentEditMode(false)}
+                          className="w-full rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className="rounded-2xl border border-slate-200 bg-white p-3 text-xs sm:p-4 sm:text-sm">
+                  <h4 className="text-base font-bold text-slate-900 sm:text-lg">Order Total</h4>
+                  <div className="mt-3 space-y-1 text-xs sm:text-sm">
+                    <div className="flex justify-between text-slate-600">
+                      <span>Subtotal</span>
+                      <span>PHP {visibleCartTotal.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between text-slate-600">
+                      <span>Tax (12%)</span>
+                      <span>PHP {taxAmount.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between text-slate-600">
+                      <span>Discount (-)</span>
                       <input
-                        value={paymentForm.qrReference}
-                        onChange={(event) => handlePaymentFieldChange("qrReference", event.target.value)}
-                        placeholder="QR PH reference number"
-                        className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        value={discountInput}
+                        onChange={(event) => setDiscountInput(event.target.value)}
+                        className="w-28 rounded-lg border border-slate-300 px-2 py-1 text-right text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
                       />
-                    )}
-
-                    {selectedPaymentMethod === "BANK_TRANSFER" && (
-                      <div className="space-y-2">
-                        <input
-                          value={paymentForm.bankName}
-                          onChange={(event) => handlePaymentFieldChange("bankName", event.target.value)}
-                          placeholder="Bank name"
-                          className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
-                        />
-                        <input
-                          value={paymentForm.bankAccountName}
-                          onChange={(event) =>
-                            handlePaymentFieldChange("bankAccountName", event.target.value)
-                          }
-                          placeholder="Account name"
-                          className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
-                        />
-                        <input
-                          value={paymentForm.bankAccountNumber}
-                          onChange={(event) =>
-                            handlePaymentFieldChange("bankAccountNumber", event.target.value)
-                          }
-                          placeholder="Account number"
-                          className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
-                        />
-                      </div>
-                    )}
-
-                    {selectedPaymentMethod === "COD" && (
-                      <div className="space-y-2">
-                        <input
-                          value={paymentForm.codReceiverName}
-                          onChange={(event) =>
-                            handlePaymentFieldChange("codReceiverName", event.target.value)
-                          }
-                          placeholder="Receiver full name"
-                          className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
-                        />
-                        <input
-                          value={paymentForm.codContactNumber}
-                          onChange={(event) =>
-                            handlePaymentFieldChange("codContactNumber", event.target.value)
-                          }
-                          placeholder="Receiver contact number"
-                          className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
-                        />
-                      </div>
-                    )}
-                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                      <button
-                        type="button"
-                        onClick={handleSavePaymentMethod}
-                        className="w-full rounded-xl bg-[#f4b133] px-4 py-2 text-sm font-semibold text-white hover:bg-[#e7a221]"
-                      >
-                        Save Payment Method
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setPaymentEditMode(false)}
-                        className="w-full rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
-                      >
-                        Cancel
-                      </button>
+                    </div>
+                    <div className="flex justify-between text-slate-600">
+                      <span>Shipping Fee</span>
+                      <input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        value={shippingFeeInput}
+                        onChange={(event) => setShippingFeeInput(event.target.value)}
+                        className="w-28 rounded-lg border border-slate-300 px-2 py-1 text-right text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
+                      />
+                    </div>
+                    <div className="mt-2 flex justify-between text-base font-bold text-slate-900 sm:text-lg">
+                      <span>Total Amount</span>
+                      <span>PHP {checkoutTotal.toFixed(2)}</span>
                     </div>
                   </div>
-                )}
-              </div>
-              <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                <h4 className="text-lg font-bold text-slate-900 sm:text-xl lg:text-2xl">Order Total</h4>
-                <div className="mt-3 space-y-1 text-sm">
-                  <div className="flex justify-between text-slate-600">
-                    <span>Subtotal</span>
-                    <span>PHP {visibleCartTotal.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between text-slate-600">
-                    <span>Tax (12%)</span>
-                    <span>PHP {taxAmount.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between text-slate-600">
-                    <span>Discount (-)</span>
-                    <input
-                      type="number"
-                      min="0"
-                      step="0.01"
-                      value={discountInput}
-                      onChange={(event) => setDiscountInput(event.target.value)}
-                      className="w-28 rounded-lg border border-slate-300 px-2 py-1 text-right text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
-                    />
-                  </div>
-                  <div className="flex justify-between text-slate-600">
-                    <span>Shipping Fee</span>
-                    <input
-                      type="number"
-                      min="0"
-                      step="0.01"
-                      value={shippingFeeInput}
-                      onChange={(event) => setShippingFeeInput(event.target.value)}
-                      className="w-28 rounded-lg border border-slate-300 px-2 py-1 text-right text-sm text-slate-700 focus:border-[#f4b133] focus:outline-none"
-                    />
-                  </div>
-                  <div className="mt-2 flex justify-between text-lg font-bold text-slate-900">
-                    <span>Total Amount</span>
-                    <span>PHP {checkoutTotal.toFixed(2)}</span>
+                  {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+                  {success && <p className="mt-3 text-sm text-green-600">{success}</p>}
+                  <div className="mt-4 grid gap-2">
+                    <button
+                      onClick={submitOrder}
+                      disabled={isSubmitting || visibleCart.length === 0}
+                      className="w-full rounded-xl bg-[#f4b133] px-4 py-3 text-sm font-semibold text-white hover:bg-[#e7a221] disabled:opacity-70"
+                    >
+                      {isSubmitting ? "Submitting..." : "Confirm Order"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setCheckoutMode(false)}
+                      className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                    >
+                      Back to Cart
+                    </button>
                   </div>
                 </div>
-                {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
-                {success && <p className="mt-3 text-sm text-green-600">{success}</p>}
-                <div className="mt-4 grid gap-2">
-                  <button
-                    onClick={submitOrder}
-                    disabled={isSubmitting || visibleCart.length === 0}
-                    className="w-full rounded-xl bg-[#f4b133] px-4 py-3 text-sm font-semibold text-white hover:bg-[#e7a221] disabled:opacity-70"
-                  >
-                    {isSubmitting ? "Submitting..." : "Confirm Order"}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setCheckoutMode(false)}
-                    className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50"
-                  >
-                    Back to Cart
-                  </button>
-                </div>
-              </div>
-            </section>
+              </section>
+            </div>
           </div>
         )}
       </aside>
@@ -1337,8 +1338,8 @@ export function OrderingClient({
                         setCategoriesOpen(false);
                       }}
                       className={`flex w-full items-center gap-2 rounded-xl border px-3 py-2 text-left text-sm font-semibold transition ${activeCategory === category
-                          ? "border-[#f4b133] bg-[#fff6e4] text-[#cc8d18]"
-                          : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+                        ? "border-[#f4b133] bg-[#fff6e4] text-[#cc8d18]"
+                        : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
                         }`}
                     >
                       <CategoryIcon className="h-4 w-4" />

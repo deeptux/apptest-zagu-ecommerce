@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { useFormStatus } from "react-dom";
 import {
   Bell,
   ChevronLeft,
@@ -37,6 +38,27 @@ type AppShellProps = {
   children: React.ReactNode;
 };
 
+function LogoutButton({ collapsed }: { collapsed: boolean }) {
+  const { pending } = useFormStatus();
+
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      className={`w-full rounded-xl border border-white/50 px-3 py-2.5 text-sm font-semibold text-white ${
+        pending ? "cursor-not-allowed opacity-70" : "hover:bg-white/20"
+      } ${collapsed ? "md:flex md:justify-center" : "flex items-center gap-3"}`}
+      title={collapsed ? "Logout" : undefined}
+      aria-busy={pending}
+    >
+      <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-white/15 text-white">
+        <LogOut className="h-4 w-4" />
+      </span>
+      <span className={collapsed ? "md:hidden" : ""}>{pending ? "Logging out..." : "Logout"}</span>
+    </button>
+  );
+}
+
 export function AppShell({
   role,
   userName,
@@ -51,6 +73,7 @@ export function AppShell({
   const [showHeaderPanel, setShowHeaderPanel] = useState(false);
   const [orderingSummaryOpen, setOrderingSummaryOpen] = useState(false);
   const [cartReady, setCartReady] = useState(false);
+  const [optimisticPath, setOptimisticPath] = useState<string | null>(null);
   const cartItems = useCartStore((state) => state.items);
   const cartItemCount = useCartStore((state) => state.itemCount());
   const cartTotalAmount = useCartStore((state) => state.totalAmount());
@@ -58,6 +81,10 @@ export function AppShell({
   useEffect(() => {
     setCartReady(true);
   }, []);
+
+  useEffect(() => {
+    setOptimisticPath(null);
+  }, [activePath]);
 
   useEffect(() => {
     const handleSummaryState = (event: Event) => {
@@ -71,11 +98,12 @@ export function AppShell({
   const visibleCartItems = cartReady ? cartItems : [];
   const visibleCartItemCount = cartReady ? cartItemCount : 0;
   const visibleCartTotalAmount = cartReady ? cartTotalAmount : 0;
+  const highlightPath = optimisticPath || activePath;
 
   const pageTitle = useMemo(() => {
-    const current = navItems.find((item) => activePath.startsWith(item.href));
+    const current = navItems.find((item) => highlightPath.startsWith(item.href));
     return current?.label || "Workspace";
-  }, [activePath, navItems]);
+  }, [highlightPath, navItems]);
 
   const subtitle =
     role === "ADMIN"
@@ -172,12 +200,17 @@ export function AppShell({
         </p>
         <nav className="space-y-2">
           {navItems.map((item) => {
-            const active = activePath.startsWith(item.href);
+            const active = highlightPath.startsWith(item.href);
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                onClick={() => setMobileOpen(false)}
+                onClick={() => {
+                  setMobileOpen(false);
+                  setOptimisticPath(item.href);
+                  setShowHeaderPanel(false);
+                }}
+                prefetch
                 className={`flex items-center rounded-xl px-3 py-2.5 text-sm transition ${active ? "bg-white text-[#d28f0a] font-semibold" : "text-white/90 hover:bg-white/20"
                   } ${desktopCollapsed ? "md:justify-center md:px-2" : "gap-3"}`}
                 title={desktopCollapsed ? item.label : undefined}
@@ -195,18 +228,7 @@ export function AppShell({
         </nav>
 
         <form action={logoutAction} className="mt-auto">
-          <button
-            type="submit"
-            className={`w-full rounded-xl border border-white/50 px-3 py-2.5 text-sm font-semibold text-white hover:bg-white/20 ${
-              desktopCollapsed ? "md:flex md:justify-center" : "flex items-center gap-3"
-            }`}
-            title={desktopCollapsed ? "Logout" : undefined}
-          >
-            <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-white/15 text-white">
-              <LogOut className="h-4 w-4" />
-            </span>
-            <span className={desktopCollapsed ? "md:hidden" : ""}>Logout</span>
-          </button>
+          <LogoutButton collapsed={desktopCollapsed} />
         </form>
       </aside>
 
