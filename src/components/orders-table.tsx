@@ -66,6 +66,9 @@ export function OrdersTable({ orders, role }: OrdersTableProps) {
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
   const [selectedOrder, setSelectedOrder] = useState<OrderRow | null>(null);
   const [isBusy, setIsBusy] = useState(false);
+  const [busyAction, setBusyAction] = useState<"APPROVING" | "REJECTING" | null>(null);
+  const [processingOrderId, setProcessingOrderId] = useState<number | null>(null);
+  const [resolvedOrderIds, setResolvedOrderIds] = useState<number[]>([]);
   const [statusRemarks, setStatusRemarks] = useState("");
   const [showStatusFilter, setShowStatusFilter] = useState(false);
   const [statusFilter, setStatusFilter] = useState<OrderStatus[]>([
@@ -83,6 +86,7 @@ export function OrdersTable({ orders, role }: OrdersTableProps) {
   const [commentText, setCommentText] = useState("");
   const [commentsBusy, setCommentsBusy] = useState(false);
   const [coordinatesModal, setCoordinatesModal] = useState<string | null>(null);
+  const [mapLoading, setMapLoading] = useState(false);
   const commentsContainerRef = useRef<HTMLDivElement | null>(null);
 
   const formatMoney = (value: number | null | undefined) =>
@@ -160,18 +164,32 @@ export function OrdersTable({ orders, role }: OrdersTableProps) {
     return () => stream.close();
   }, [router]);
 
+  useEffect(() => {
+    setMapLoading(Boolean(coordinatesModal));
+  }, [coordinatesModal]);
+
   const updateStatus = async (orderId: number, status: "APPROVED" | "REJECTED", reason = "") => {
+    let succeeded = false;
     try {
       setIsBusy(true);
+      setProcessingOrderId(orderId);
+      setBusyAction(status === "APPROVED" ? "APPROVING" : "REJECTING");
       const response = await fetch(`/api/orders/${orderId}/status`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status, reason }),
       });
       if (!response.ok) return;
+      succeeded = true;
+      setResolvedOrderIds((prev) => (prev.includes(orderId) ? prev : [...prev, orderId]));
       router.refresh();
     } finally {
+      if (succeeded) {
+        closeOrderModal();
+      }
       setIsBusy(false);
+      setProcessingOrderId(null);
+      setBusyAction(null);
     }
   };
 
@@ -196,6 +214,13 @@ export function OrdersTable({ orders, role }: OrdersTableProps) {
   const mapEmbedUrl = coordinatesModal
     ? `https://maps.google.com/maps?q=${encodeURIComponent(coordinatesModal)}&z=16&output=embed`
     : "";
+
+  const closeOrderModal = () => {
+    setSelectedOrder(null);
+    setStatusRemarks("");
+    setComments([]);
+    setCoordinatesModal(null);
+  };
 
   return (
     <>
@@ -307,7 +332,10 @@ export function OrdersTable({ orders, role }: OrdersTableProps) {
                 </td>
                 {role === "ADMIN" && (
                   <td className="min-w-[160px] px-3 py-3 sm:px-4" onClick={(event) => event.stopPropagation()}>
-                    {order.status === "PENDING" ? (
+                    {order.status === "PENDING" &&
+                    selectedOrder?.id !== order.id &&
+                    processingOrderId !== order.id &&
+                    !resolvedOrderIds.includes(order.id) ? (
                       <div className="flex items-center gap-1.5 sm:gap-2">
                         <button
                           onClick={() => void updateStatus(order.id, "APPROVED")}
@@ -324,6 +352,11 @@ export function OrdersTable({ orders, role }: OrdersTableProps) {
                           Reject
                         </button>
                       </div>
+                    ) : order.status === "PENDING" &&
+                      (selectedOrder?.id === order.id || processingOrderId === order.id) ? (
+                      <span className="text-xs text-slate-400">Reviewing in modal...</span>
+                    ) : order.status === "PENDING" && resolvedOrderIds.includes(order.id) ? (
+                      <span className="text-xs text-slate-400">No actions</span>
                     ) : (
                       <span className="text-xs text-slate-400">No actions</span>
                     )}
@@ -357,12 +390,7 @@ export function OrdersTable({ orders, role }: OrdersTableProps) {
                 </p>
               </div>
               <button
-                onClick={() => {
-                  setSelectedOrder(null);
-                  setStatusRemarks("");
-                  setComments([]);
-                  setCoordinatesModal(null);
-                }}
+                onClick={closeOrderModal}
                 className="rounded-lg border border-slate-200 px-3 py-1.5 text-sm"
               >
                 Close
@@ -561,11 +589,22 @@ export function OrdersTable({ orders, role }: OrdersTableProps) {
                 Close
               </button>
             </div>
-            <div className="h-[420px] overflow-hidden rounded-xl border border-slate-200">
+            <div className="relative h-[420px] overflow-hidden rounded-xl border border-slate-200">
+              {mapLoading && (
+                <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/80">
+                  <div className="flex flex-col items-center gap-3 text-center">
+                    <span className="h-9 w-9 animate-spin rounded-full border-4 border-[#f4b133]/30 border-t-[#f4b133]" />
+                    <p className="text-sm font-medium text-slate-600">
+                      Fetching and rendering components.
+                    </p>
+                  </div>
+                </div>
+              )}
               <iframe
                 title="Pinned coordinates map"
                 src={mapEmbedUrl}
                 className="h-full w-full"
+                onLoad={() => setMapLoading(false)}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
               />
@@ -587,7 +626,8 @@ export function OrdersTable({ orders, role }: OrdersTableProps) {
             <div className="mt-4 flex justify-end gap-2">
               <button
                 onClick={() => setRejectConfirmOrder(null)}
-                className="rounded-md border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700"
+                disabled={isBusy}
+                className="rounded-md border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 disabled:opacity-60"
               >
                 Cancel
               </button>
@@ -600,11 +640,23 @@ export function OrdersTable({ orders, role }: OrdersTableProps) {
                   );
                   setRejectConfirmOrder(null);
                 }}
-                className="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white hover:bg-red-700"
+                disabled={isBusy}
+                className="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-60"
               >
                 Yes, reject
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {busyAction && (
+        <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/45 p-4">
+          <div className="w-full max-w-sm rounded-2xl bg-white p-5 text-center shadow-2xl">
+            <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-[#f4b133]/30 border-t-[#f4b133]" />
+            <p className="mt-3 text-base font-semibold text-slate-800">
+              {busyAction === "APPROVING" ? "Approving order..." : "Rejecting order..."}
+            </p>
+            <p className="mt-1 text-sm text-slate-500">Please wait while we process your request.</p>
           </div>
         </div>
       )}

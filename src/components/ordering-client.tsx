@@ -150,6 +150,7 @@ export function OrderingClient({
   const [discountInput, setDiscountInput] = useState("30");
   const [selectedCoordinates, setSelectedCoordinates] = useState<Coordinates | null>(null);
   const [mapModalOpen, setMapModalOpen] = useState(false);
+  const [mapLoading, setMapLoading] = useState(false);
   const [tempCoordinates, setTempCoordinates] = useState<Coordinates | null>(null);
   const [mapError, setMapError] = useState("");
   const [viewportWidth, setViewportWidth] = useState<number | null>(null);
@@ -365,8 +366,10 @@ export function OrderingClient({
     let cancelled = false;
     const initialize = async () => {
       setMapError("");
+      setMapLoading(true);
       if (!googleMapsKey) {
         setMapError("Google Maps API key is missing. Set NEXT_PUBLIC_GOOGLE_MAPS_API_KEY.");
+        setMapLoading(false);
         return;
       }
 
@@ -376,11 +379,15 @@ export function OrderingClient({
         const message =
           error instanceof Error ? error.message : "Unable to load Google Maps right now.";
         setMapError(message);
+        setMapLoading(false);
         return;
       }
 
       const mapsApi = getGoogleMapsApi();
-      if (cancelled || !mapContainerRef.current || !mapsApi) return;
+      if (cancelled || !mapContainerRef.current || !mapsApi) {
+        setMapLoading(false);
+        return;
+      }
       const fallbackCenter = { lat: 14.5995, lng: 120.9842 };
       const center = tempCoordinatesRef.current || selectedCoordinatesRef.current || fallbackCenter;
       const map = new mapsApi.maps.Map(mapContainerRef.current, {
@@ -410,6 +417,7 @@ export function OrderingClient({
           position: nextPin,
         });
       });
+      setMapLoading(false);
     };
 
     void initialize();
@@ -1282,9 +1290,9 @@ export function OrderingClient({
                     <button
                       onClick={submitOrder}
                       disabled={isSubmitting || visibleCart.length === 0}
-                      className="w-full rounded-xl bg-[#f4b133] px-4 py-3 text-sm font-semibold text-white hover:bg-[#e7a221] disabled:opacity-70"
+                    className="w-full rounded-xl bg-[#f4b133] px-4 py-3 text-sm font-semibold text-white hover:bg-[#e7a221] disabled:cursor-not-allowed disabled:opacity-70"
                     >
-                      {isSubmitting ? "Submitting..." : "Confirm Order"}
+                    {isSubmitting ? "Confirming order..." : "Confirm Order"}
                     </button>
                     <button
                       type="button"
@@ -1377,7 +1385,19 @@ export function OrderingClient({
                   {mapError}
                 </div>
               ) : (
-                <div ref={mapContainerRef} className="h-[460px] w-full rounded-xl border border-slate-200" />
+                <div className="relative h-[460px] w-full rounded-xl border border-slate-200">
+                  {mapLoading && (
+                    <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/80">
+                      <div className="flex flex-col items-center gap-3 text-center">
+                        <span className="h-9 w-9 animate-spin rounded-full border-4 border-[#f4b133]/30 border-t-[#f4b133]" />
+                        <p className="text-sm font-medium text-slate-600">
+                          Fetching and rendering components.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                  <div ref={mapContainerRef} className="h-full w-full rounded-xl" />
+                </div>
               )}
               <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
                 <p className="text-sm text-slate-600">

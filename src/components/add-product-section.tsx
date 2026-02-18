@@ -2,6 +2,7 @@
 
 import { type ChangeEvent, useEffect, useMemo, useState } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
+import { useFormStatus } from "react-dom";
 
 type CategoryOption = {
   id: number;
@@ -14,6 +15,21 @@ type AddProductSectionProps = {
 };
 
 const FALLBACK_IMAGE = "/products/not-available.png";
+
+function AddProductSubmitButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      className="w-full rounded-lg bg-[#f4b133] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#e7a221] disabled:cursor-not-allowed disabled:opacity-70"
+      aria-busy={pending}
+    >
+      {pending ? "Adding product..." : "Add Product"}
+    </button>
+  );
+}
 
 export function AddProductSection({ categories, action }: AddProductSectionProps) {
   const [collapsed, setCollapsed] = useState(true);
@@ -229,9 +245,7 @@ export function AddProductSection({ categories, action }: AddProductSectionProps
           </div>
 
           <div className="xl:col-span-2">
-            <button className="w-full rounded-lg bg-[#f4b133] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#e7a221]">
-              Add Product
-            </button>
+            <AddProductSubmitButton />
           </div>
         </form>
       )}
