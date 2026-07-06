@@ -19,6 +19,7 @@ import {
   X,
 } from "lucide-react";
 import { logoutAction } from "@/app/actions";
+import { assetPath } from "@/lib/base-path";
 import { useCartStore } from "@/store/cart-store";
 
 type NavItem = {
@@ -162,7 +163,8 @@ export function AppShell({
             <>
               <div className="relative h-8 w-8 overflow-hidden rounded-full bg-white hidden md:block">
                 <Image
-                  src="/images/company-logo-circle.jpg"
+                  src={assetPath("/images/company-logo-circle.jpg")}
+                  unoptimized
                   alt="Company logo circle"
                   fill
                   className="object-cover"
@@ -170,7 +172,8 @@ export function AppShell({
               </div>
               <div className="inline-flex w-fit overflow-hidden rounded-md bg-white/20 md:hidden">
                 <Image
-                  src="/images/company-logo.png"
+                  src={assetPath("/images/company-logo.png")}
+                  unoptimized
                   alt="Company logo"
                   width={150}
                   height={48}
@@ -181,7 +184,8 @@ export function AppShell({
           ) : (
             <div className="inline-flex w-fit overflow-hidden rounded-md bg-white/20">
               <Image
-                src="/images/company-logo.png"
+                src={assetPath("/images/company-logo.png")}
+                unoptimized
                 alt="Company logo"
                 width={150}
                 height={48}
@@ -299,7 +303,8 @@ export function AppShell({
                               <span className="flex min-w-0 items-center gap-2 pr-2">
                                 <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-md bg-slate-200">
                                   <Image
-                                    src={item.imageUrl || "/products/not-available.png"}
+                                    src={assetPath(item.imageUrl)}
+                                    unoptimized
                                     alt={item.name}
                                     fill
                                     className="object-cover"

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { assetPath } from "@/lib/base-path";
 import { ChevronLeft, ChevronRight, Megaphone } from "lucide-react";
 
 type AnnouncementSlide = {
@@ -32,7 +33,7 @@ export function DealerAnnouncementsHero({ slides }: DealerAnnouncementsHeroProps
   return (
     <section className="relative overflow-hidden rounded-3xl border border-slate-200 bg-slate-900">
       <div className="relative h-[250px] w-full md:h-[300px]">
-        <Image src={active.imageUrl} alt={active.title} fill className="object-cover" />
+        <Image src={assetPath(active.imageUrl)} alt={active.title} fill className="object-cover" unoptimized />
         <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/55 to-black/35" />
 
         <div className="absolute inset-0 flex items-end p-6 md:p-8">

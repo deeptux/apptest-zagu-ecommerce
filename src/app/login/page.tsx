@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useActionState } from "react";
 import { loginAction, type LoginState } from "@/app/login/actions";
+import { assetPath } from "@/lib/base-path";
 
 const initialState: LoginState = { error: null };
 
@@ -15,26 +16,29 @@ export default function LoginPage() {
         <section className="hidden w-[40%] shrink-0 bg-gradient-to-b from-[#f1b53b] to-[#f3bc4f] min-[800px]:flex min-[800px]:flex-col">
           <div className="relative h-[150px] w-full">
             <Image
-              src="/images/company-logo-sm.png"
+              src={assetPath("/images/company-logo-sm.png")}
               alt="Zagu company logo small"
               fill
               className="object-cover object-left min-[1070px]:hidden"
               priority
+              unoptimized
             />
             <Image
-              src="/images/company-logo.png"
+              src={assetPath("/images/company-logo.png")}
               alt="Zagu company logo"
               fill
               className="hidden object-cover object-left min-[1070px]:block"
               priority
+              unoptimized
             />
           </div>
           <div className="relative min-h-0 flex-1 w-full">
             <Image
-              src="/images/bg-login.png"
+              src={assetPath("/images/bg-login.png")}
               alt="Zagu drink background"
               fill
               className="object-cover object-center"
+              unoptimized
             />
           </div>
         </section>

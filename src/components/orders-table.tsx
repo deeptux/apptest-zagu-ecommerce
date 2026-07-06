@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { apiPath } from "@/lib/base-path";
+import { apiPath, assetPath } from "@/lib/base-path";
 import { ArrowDownAZ, ArrowUpDown, ArrowUpZA, Filter, MessageSquareText } from "lucide-react";
 
 type OrderStatus = "PENDING" | "APPROVED" | "REJECTED";
@@ -403,7 +403,8 @@ export function OrdersTable({ orders, role }: OrdersTableProps) {
                 <div key={item.id} className="flex items-center gap-3 rounded-xl border border-slate-200 p-3">
                   <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-slate-100">
                     <Image
-                      src={item.product.imageUrl || "https://picsum.photos/seed/zagu-order/120/120"}
+                      src={assetPath(item.product.imageUrl || "https://picsum.photos/seed/zagu-order/120/120")}
+                      unoptimized
                       alt={item.product.name}
                       fill
                       className="object-cover"

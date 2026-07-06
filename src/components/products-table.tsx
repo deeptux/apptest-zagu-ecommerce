@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { apiPath } from "@/lib/base-path";
+import { apiPath, assetPath } from "@/lib/base-path";
 import { ArrowDownAZ, ArrowUpDown, ArrowUpZA, Eye, EyeOff, Filter, Search, Trash2 } from "lucide-react";
 
 type CategoryOption = {
@@ -219,6 +219,7 @@ export function ProductsTable({ products, categories }: ProductsTableProps) {
   const editPreviewSource = editImageError
     ? "/products/not-available.png"
     : editFilePreviewUrl || editImageUrlValue.trim() || "/products/not-available.png";
+  const resolvedEditPreviewSource = assetPath(editPreviewSource);
 
   const updateProduct = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -427,7 +428,8 @@ export function ProductsTable({ products, categories }: ProductsTableProps) {
                   <td className="min-w-[110px] px-3 py-3 sm:px-4">
                     <div className="relative h-12 w-12 overflow-hidden rounded-md bg-slate-100">
                       <Image
-                        src={product.imageUrl || "/products/not-available.png"}
+                        src={assetPath(product.imageUrl)}
+                        unoptimized
                         alt={product.name}
                         fill
                         className="object-cover"
@@ -518,7 +520,7 @@ export function ProductsTable({ products, categories }: ProductsTableProps) {
                   <div className="mt-3 space-y-3">
                     <div className="relative h-48 w-full overflow-hidden rounded-lg border border-slate-200 bg-white">
                       <img
-                        src={editPreviewSource}
+                        src={resolvedEditPreviewSource}
                         alt="Product preview"
                         className="h-full w-full object-cover"
                         onError={() => setEditImageError(true)}
