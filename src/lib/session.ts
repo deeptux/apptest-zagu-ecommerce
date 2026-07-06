@@ -1,6 +1,7 @@
 import { Role } from "@prisma/client";
 import { cookies } from "next/headers";
 import { SESSION_COOKIE } from "@/lib/constants";
+import { BASE_PATH } from "@/lib/base-path";
 
 export type SessionPayload = {
   userId: number;
@@ -30,5 +31,8 @@ export async function getSession() {
 
 export async function clearSession() {
   const store = await cookies();
-  store.delete(SESSION_COOKIE);
+  store.delete({
+    name: SESSION_COOKIE,
+    path: BASE_PATH || "/",
+  });
 }

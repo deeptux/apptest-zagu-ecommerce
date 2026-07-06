@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useCartStore } from "@/store/cart-store";
+import { apiPath } from "@/lib/base-path";
 import { useProductPreferencesStore } from "@/store/product-preferences-store";
 import {
   Cog,
@@ -187,7 +188,7 @@ export function OrderingClient({
   }, []);
 
   useEffect(() => {
-    const stream = new EventSource("/api/products/stream");
+    const stream = new EventSource(apiPath("/products/stream"));
     stream.onmessage = () => {
       router.refresh();
     };
@@ -481,7 +482,7 @@ export function OrderingClient({
       setSuccess("");
       const itemsToSubmit = cart.map((line) => ({ productId: line.productId, quantity: line.quantity }));
 
-      const response = await fetch("/api/orders", {
+      const response = await fetch(apiPath("/orders"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

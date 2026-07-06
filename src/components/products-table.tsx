@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { apiPath } from "@/lib/base-path";
 import { ArrowDownAZ, ArrowUpDown, ArrowUpZA, Eye, EyeOff, Filter, Search, Trash2 } from "lucide-react";
 
 type CategoryOption = {
@@ -142,7 +143,7 @@ export function ProductsTable({ products, categories }: ProductsTableProps) {
   };
 
   useEffect(() => {
-    const stream = new EventSource("/api/products/stream");
+    const stream = new EventSource(apiPath("/products/stream"));
     stream.onmessage = () => router.refresh();
     stream.onerror = () => stream.close();
     return () => stream.close();
@@ -176,7 +177,7 @@ export function ProductsTable({ products, categories }: ProductsTableProps) {
   const toggleVisibility = async (product: ProductRow) => {
     try {
       setBusyId(product.id);
-      await fetch(`/api/products/${product.id}/visibility`, {
+      await fetch(apiPath(`/products/${product.id}/visibility`), {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ visible: !product.isVisible }),
@@ -190,7 +191,7 @@ export function ProductsTable({ products, categories }: ProductsTableProps) {
   const deleteProduct = async (productId: number) => {
     try {
       setBusyId(productId);
-      await fetch(`/api/products/${productId}`, { method: "DELETE" });
+      await fetch(apiPath(`/products/${productId}`), { method: "DELETE" });
       router.refresh();
     } finally {
       setBusyId(null);
@@ -226,7 +227,7 @@ export function ProductsTable({ products, categories }: ProductsTableProps) {
     setIsSaving(true);
 
     const formData = new FormData(event.currentTarget);
-    const response = await fetch(`/api/products/${selectedProduct.id}`, {
+    const response = await fetch(apiPath(`/products/${selectedProduct.id}`), {
       method: "PATCH",
       body: formData,
     });

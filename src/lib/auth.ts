@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { encodeSession, getSession } from "@/lib/session";
 import { SESSION_COOKIE } from "@/lib/constants";
+import { BASE_PATH } from "@/lib/base-path";
 
 export async function getCurrentUser() {
   const session = await getSession();
@@ -45,7 +46,7 @@ export async function createUserSession(userId: number, role: Role) {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
-    path: "/",
+    path: BASE_PATH || "/",
     maxAge: 60 * 60 * 24,
   });
 }

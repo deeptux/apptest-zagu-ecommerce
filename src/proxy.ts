@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SESSION_COOKIE } from "@/lib/constants";
+import { withBasePath } from "@/lib/base-path";
 
 function parseRoleFromCookie(raw: string | undefined) {
   if (!raw) return null;
@@ -30,22 +31,22 @@ export function proxy(request: NextRequest) {
   const role = parseRoleFromCookie(cookieValue);
 
   if (!role) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    return NextResponse.redirect(new URL(withBasePath("/login"), request.url));
   }
 
   if (pathname.startsWith("/admin") && role !== "ADMIN") {
-    return NextResponse.redirect(new URL("/dealer/dashboard", request.url));
+    return NextResponse.redirect(new URL(withBasePath("/dealer/dashboard"), request.url));
   }
 
   if (pathname.startsWith("/dealer") && role === "ADMIN") {
-    return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+    return NextResponse.redirect(new URL(withBasePath("/admin/dashboard"), request.url));
   }
 
   if (pathname === "/") {
     if (role === "ADMIN") {
-      return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+      return NextResponse.redirect(new URL(withBasePath("/admin/dashboard"), request.url));
     }
-    return NextResponse.redirect(new URL("/dealer/dashboard", request.url));
+    return NextResponse.redirect(new URL(withBasePath("/dealer/dashboard"), request.url));
   }
 
   return NextResponse.next();

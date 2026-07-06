@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { apiPath } from "@/lib/base-path";
 import { ArrowDownAZ, ArrowUpDown, ArrowUpZA, Filter, MessageSquareText } from "lucide-react";
 
 type OrderStatus = "PENDING" | "APPROVED" | "REJECTED";
@@ -138,7 +139,7 @@ export function OrdersTable({ orders, role }: OrdersTableProps) {
   };
 
   const refreshComments = async (orderId: number) => {
-    const response = await fetch(`/api/orders/${orderId}/comments`, { cache: "no-store" });
+    const response = await fetch(apiPath(`/orders/${orderId}/comments`), { cache: "no-store" });
     if (!response.ok) return;
     const payload = (await response.json()) as { comments: OrderComment[] };
     setComments(payload.comments || []);
@@ -154,7 +155,7 @@ export function OrdersTable({ orders, role }: OrdersTableProps) {
   }, [selectedOrder]);
 
   useEffect(() => {
-    const stream = new EventSource("/api/orders/stream");
+    const stream = new EventSource(apiPath("/orders/stream"));
     stream.onmessage = () => {
       router.refresh();
     };
@@ -174,7 +175,7 @@ export function OrdersTable({ orders, role }: OrdersTableProps) {
       setIsBusy(true);
       setProcessingOrderId(orderId);
       setBusyAction(status === "APPROVED" ? "APPROVING" : "REJECTING");
-      const response = await fetch(`/api/orders/${orderId}/status`, {
+      const response = await fetch(apiPath(`/orders/${orderId}/status`), {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status, reason }),
@@ -197,7 +198,7 @@ export function OrdersTable({ orders, role }: OrdersTableProps) {
     if (!selectedOrder || !commentText.trim()) return;
     try {
       setCommentsBusy(true);
-      const response = await fetch(`/api/orders/${selectedOrder.id}/comments`, {
+      const response = await fetch(apiPath(`/orders/${selectedOrder.id}/comments`), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: commentText.trim() }),
