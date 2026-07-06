@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useCartStore } from "@/store/cart-store";
-import { apiPath } from "@/lib/base-path";
+import { apiPath, assetPath } from "@/lib/base-path";
 import { useProductPreferencesStore } from "@/store/product-preferences-store";
 import {
   Cog,
@@ -747,7 +747,8 @@ export function OrderingClient({
                 >
                   <div className="h-36 w-full overflow-hidden rounded-lg bg-slate-100">
                     <Image
-                      src={product.imageUrl || "/products/not-available.png"}
+                      src={assetPath(product.imageUrl)}
+                      unoptimized
                       alt={product.name}
                       width={400}
                       height={220}
@@ -861,7 +862,8 @@ export function OrderingClient({
                   <div className="flex items-start gap-2">
                     <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-md bg-slate-200">
                       <Image
-                        src={line.imageUrl || "/products/not-available.png"}
+                        src={assetPath(line.imageUrl)}
+                        unoptimized
                         alt={line.name}
                         fill
                         className="object-cover"
@@ -932,7 +934,8 @@ export function OrderingClient({
                       <div className="flex items-center gap-3">
                         <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md bg-slate-200">
                           <Image
-                            src={line.imageUrl || "/products/not-available.png"}
+                            src={assetPath(line.imageUrl)}
+                        unoptimized
                             alt={line.name}
                             fill
                             className="object-cover"

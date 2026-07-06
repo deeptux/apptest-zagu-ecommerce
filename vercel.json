@@ -1,0 +1,29 @@
+{
+  "redirects": [
+    {
+      "source": "/login",
+      "destination": "/demo/b2b-ecommerce/login",
+      "permanent": true
+    },
+    {
+      "source": "/admin/:path*",
+      "destination": "/demo/b2b-ecommerce/admin/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/dealer/:path*",
+      "destination": "/demo/b2b-ecommerce/dealer/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/images/:path*",
+      "destination": "/demo/b2b-ecommerce/images/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/products/:path*",
+      "destination": "/demo/b2b-ecommerce/products/:path*",
+      "permanent": true
+    }
+  ]
+}

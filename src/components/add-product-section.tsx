@@ -3,6 +3,7 @@
 import { type ChangeEvent, useEffect, useMemo, useState } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { useFormStatus } from "react-dom";
+import { assetPath } from "@/lib/base-path";
 
 type CategoryOption = {
   id: number;
@@ -192,7 +193,7 @@ export function AddProductSection({ categories, action }: AddProductSectionProps
               <div className="mt-3 space-y-3">
                 <div className="relative h-48 w-full overflow-hidden rounded-lg border border-slate-200 bg-white">
                   <img
-                    src={renderedPreviewSource}
+                    src={assetPath(renderedPreviewSource)}
                     alt="Product preview"
                     className="h-full w-full object-cover"
                     onError={() => setImageError(true)}
